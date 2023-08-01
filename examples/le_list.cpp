@@ -19,14 +19,23 @@ using utils = graph_utils<vertex>;
 
 int main(int argc, char* argv[]) {
   auto usage = "Usage: le_list <n> || le_list <filename>";
-  if (argc != 2) std::cout << usage << std::endl;
+  if (argc < 2) std::cout << usage << std::endl;
   else {
+    int rounds = 5;
+    for (int i = 2; i<argc; i++){
+      std::string key = argv[i];
+      if (key=="-t"){
+        rounds = std::atoi(argv[++i]);
+        break;
+      }
+    }
     long n = 0;
     graph G, GT;
     try { n = std::stol(argv[1]); }
     catch (...) {}
     if (n == 0) {
-      G = utils::read_symmetric_graph_from_file(argv[1]);
+      // G = utils::read_symmetric_graph_from_file(argv[1]);
+      G = utils::read_graph_from_bin(argv[1]);
       GT = G;
       n = G.size();
     } else {
@@ -49,12 +58,12 @@ int main(int argc, char* argv[]) {
     utils::print_graph_stats(G);
     result result;
     parlay::internal::timer t("Time");
-    for (int i=0; i < 5; i++) {
+    for (int i=0; i < rounds; i++) {
       result = create_le_list(G, GT, order);
       t.next("le_list");
     }
 
     long total = reduce(map(result, parlay::size_of()));
-    std::cout << "Average LE-list size: " << ((double) total / (double) n) << std::endl;
+    std::cout << "LE-list size: " << total << std::endl;
   }
 }
