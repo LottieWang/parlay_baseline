@@ -5,8 +5,8 @@
 #include <parlay/sequence.h>
 #include <parlay/internal/get_time.h>
 
-using distance = int;
-using vertex = int;
+using distance = uint32_t;
+using vertex = uint32_t;
 #include "le_list.h"
 #include "helper/graph_utils.h"
 
